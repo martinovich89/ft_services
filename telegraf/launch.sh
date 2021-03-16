@@ -1,0 +1,2 @@
+docker build -t telegraf_img ./telegraf/
+docker run --name telegraf_container --rm -ti -e USER -e MINIKUBE_IP=172.17.0.3 -v /var/run/docker.sock:/var/run/docker.sock:ro --net=my_network -p 4999:4999 telegraf_img
