@@ -1,0 +1,25 @@
+FROM alpine:latest
+
+RUN apk update --no-cache \
+&& apk add --no-cache php7 php7-fpm php7-opcache php7-gd php7-mysqli php7-zlib php7-curl php7-mbstring php7-json php7-session \
+&& apk add --no-cache nginx openrc openssl
+
+RUN mkdir -p /var/www/
+
+RUN wget https://wordpress.org/latest.tar.gz \
+&& tar -xvf latest.tar.gz \
+&& mv wordpress/* /var/www/
+
+COPY srcs/launch.sh /usr/local/bin/
+COPY srcs/nginx.conf /etc/nginx/conf.d/default.conf
+COPY srcs/wp-config.php /var/www/
+
+RUN chmod 777 -R /wordpress
+
+RUN mkdir -p /run/nginx && mkdir -p /run/php && mkdir -p /run/wordpress && mkdir -p /var/run
+
+#RUN sed -i 's/#   include \"mod_fastcgi.conf\"/   include \"mod_fastcgi.conf\"/' /etc/lighttpd/lighttpd.conf
+
+RUN chmod +x /usr/local/bin/launch.sh
+
+ENTRYPOINT ["launch.sh"]% 
