@@ -5,7 +5,7 @@ RUN apk update && apk add --no-cache \
     openssl
 
 COPY srcs/launch.sh /usr/local/bin/
-COPY srcs/nginx.conf /etc/nginx/
+COPY srcs/default.conf /etc/nginx/conf.d
 COPY srcs/index.html /var/www/
 
 RUN mkdir /etc/nginx/ssl \

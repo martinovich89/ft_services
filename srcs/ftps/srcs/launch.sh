@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 adduser -D -h /srv/ftp mhenry
 echo "mhenry:pw" | chpasswd

@@ -13,21 +13,24 @@ RUN apk update && apk add --no-cache \
     php7-json \
     php7-session
 
-#RUN wget https://wordpress.org/latest.tar.gz
-
-COPY srcs/latest.tar.gz ./
-COPY srcs/nginx.conf /etc/nginx/conf.d/default.conf
-COPY srcs/launch.sh /usr/local/bin/
-COPY srcs/wp-config.php /wordpress/
-
-#RUN chmod -R 777 /var/log/nginx \
-RUN chmod +x /usr/local/bin/launch.sh \
-&&  mkdir -p /run/nginx && mkdir -p /run/php && mkdir -p /run/wordpress && mkdir -p /var/run \
-&&  tar -xvf latest.tar.gz \
+# Install wordpress
+RUN wget https://wordpress.org/latest.tar.gz \
+&&  tar -zxvf latest.tar.gz && rm latest.tar.gz \
 &&  rm -rf latest.tar.gz \
-&&  chmod 777 -R /wordpress \
 &&  mv /wordpress/* /var/www/.
+
+# Import configs and script
+COPY srcs/default.conf /etc/nginx/conf.d/default.conf
+COPY srcs/launch.sh /usr/local/bin/
+COPY srcs/wp-config.php /var/www/
+
+# Making services executable
+RUN mkdir -p /run/nginx \
+&&  mkdir -p /run/php \
+&&  mkdir -p /run/wordpress \
+&&  mkdir -p /var/run \
+&&  chmod +x /usr/local/bin/launch.sh
 
 EXPOSE 5050
 
-CMD ["launch.sh"]
+ENTRYPOINT ["launch.sh"]
